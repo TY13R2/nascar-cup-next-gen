@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>NASCAR Cup Teams Dashboard, 2019-2024</title>
+  <meta name="description" content="Interactive dashboard: filter 6,321 NASCAR Cup driver-race results by season and team group, 2019-2024.">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <nav class="nav" aria-label="Main">
+    <div class="nav-inner">
+      <a class="brand" href="index.html">NASCAR Cup Teams</a>
+      <a class="tab" href="index.html">Report</a>
+      <a class="tab" href="dashboard.html" aria-current="page">Dashboard</a>
+      <button class="theme-btn" id="theme-btn" type="button">Dark theme</button>
+    </div>
+  </nav>
+
+  <main>
+    <h1 id="title">Dashboard: which team groups gained or lost the most average finishing position after the Next Gen car?</h1>
+    <p class="dash-note" id="scope" aria-live="polite">Loading&hellip;</p>
+
+    <section class="controls" id="controls" aria-label="Filters"></section>
+    <ul class="tiles" id="tiles" aria-label="Summary numbers for the current view"></ul>
+
+    <div class="grid-2">
+      <div class="figure">
+        <p class="title" id="a-title"></p><p class="subtitle" id="a-sub"></p>
+        <div class="chart" id="chart-a"></div>
+      </div>
+      <div class="figure">
+        <p class="title" id="b-title"></p><p class="subtitle" id="b-sub"></p>
+        <div class="chart" id="chart-b"></div>
+      </div>
+      <div class="figure">
+        <p class="title" id="c-title"></p><p class="subtitle" id="c-sub"></p>
+        <div class="chart" id="chart-c"></div>
+      </div>
+      <div class="figure">
+        <p class="title">The numbers behind the current view</p>
+        <p class="subtitle" id="t-sub"></p>
+        <div id="table"></div>
+      </div>
+    </div>
+    <p class="note">Every number is calculated in your browser from cup_next_gen.csv and uses the same definitions as the <a href="index.html">report</a>. &dagger; many drivers, &Dagger; about one car: these flags come from the whole file and do not change with the filters.</p>
+    <noscript><p class="note">This dashboard calculates every number in your browser from cup_next_gen.csv, so it needs JavaScript turned on.</p></noscript>
+  </main>
+
+  <script src="data.js"></script>
+  <script src="charts.js"></script>
+  <script src="dashboard.js"></script>
+</body>
+</html>
