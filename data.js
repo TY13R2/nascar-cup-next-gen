@@ -189,6 +189,69 @@ function buildTable(cols, rows, opts) {
   return el("div", { class: "table-wrap" }, [table]);
 }
 
+/* ---------- team badges (original drawings; no official logos are bundled) ----------
+   abbr is the three-letter badge text. To show a real logo, put an image file you have the right to use
+   in a folder such as assets/logos/ and set logo: "assets/logos/jgr.png" for that team. */
+var TEAM_STYLE = {
+  "Front Row Motorsports":    { abbr: "FRM", hue: 28,  logo: null },
+  "Hendrick Motorsports":     { abbr: "HMS", hue: 215, logo: null },
+  "JTG Daugherty Racing":     { abbr: "JTG", hue: 300, logo: null },
+  "Joe Gibbs Racing":         { abbr: "JGR", hue: 48,  logo: null },
+  "Legacy Motor Club":        { abbr: "LMC", hue: 175, logo: null },
+  "RFK Racing":               { abbr: "RFK", hue: 0,   logo: null },
+  "Richard Childress Racing": { abbr: "RCR", hue: 330, logo: null },
+  "Rick Ware Racing":         { abbr: "RWR", hue: 245, logo: null },
+  "Spire Motorsports":        { abbr: "SPI", hue: 140, logo: null },
+  "Stewart-Haas Racing":      { abbr: "SHR", hue: 12,  logo: null },
+  "Team Penske":              { abbr: "PEN", hue: 195, logo: null },
+  "Wood Brothers Racing":     { abbr: "WBR", hue: 85,  logo: null }
+};
+function teamAbbr(g) { return (TEAM_STYLE[g] && TEAM_STYLE[g].abbr) || g.slice(0, 3).toUpperCase(); }
+function teamLogo(g) { return (TEAM_STYLE[g] && TEAM_STYLE[g].logo) || null; }
+// Decorative color per team (not livery, not data): the abbreviation, not the color, identifies a team.
+function teamColor(g) { var s = TEAM_STYLE[g]; return "hsl(" + (s ? s.hue : 0) + " 62% 46%)"; }
+function badgeEl(g) {
+  var b = el("span", { "class": "badge", style: "background:" + teamColor(g), "aria-hidden": "true" });
+  if (teamLogo(g)) b.appendChild(el("img", { src: teamLogo(g), alt: "" })); else b.textContent = teamAbbr(g);
+  return b;
+}
+
+/* ---------- small effects (none of them changes a number) ---------- */
+
+var REDUCED_MOTION = !!(window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches);
+
+// Counts a number up from 0 to its final text. The element always ends on exactly finalText.
+function countUp(node, finalText, value, format, ms) {
+  node.textContent = finalText;
+  if (REDUCED_MOTION || !window.IntersectionObserver || !isNum(value)) return;
+  var started = false;
+  function run() {
+    if (started) return; started = true;
+    var t0 = null;
+    setTimeout(function () { node.textContent = finalText; }, (ms || 900) + 600);   // if frames stall (hidden tab), still end on the exact value
+    (function step(ts) {
+      if (t0 === null) t0 = ts;
+      var k = Math.min(1, (ts - t0) / (ms || 900)), e = 1 - Math.pow(1 - k, 3);
+      node.textContent = k >= 1 ? finalText : format(value * e);
+      if (k < 1) requestAnimationFrame(step);
+    })(performance.now());
+  }
+  // The real value is in the page until the number scrolls into view; only then does it count up from 0.
+  var io = new IntersectionObserver(function (es) { if (es.some(function (e) { return e.isIntersecting; })) { io.disconnect(); run(); } });
+  io.observe(node);
+}
+
+// Fades each .reveal element in as it scrolls into view. Without motion or IntersectionObserver, everything is simply visible.
+function setupReveal(nodes) {
+  if (REDUCED_MOTION || !window.IntersectionObserver) return;
+  document.documentElement.classList.add("js-reveal");
+  var io = new IntersectionObserver(function (es) {
+    es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); } });
+  }, { rootMargin: "0px 0px -8% 0px" });
+  nodes.forEach(function (n) { n.classList.add("reveal"); io.observe(n); });
+  setTimeout(function () { nodes.forEach(function (n) { n.classList.add("in"); }); }, 4000);   // safety net
+}
+
 /* ---------- theme toggle (light / dark, remembered when storage is available) ---------- */
 
 function initTheme() {

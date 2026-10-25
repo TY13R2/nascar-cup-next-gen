@@ -56,13 +56,39 @@ function init(rows) {
   resetBtn.addEventListener("click", function () {
     state.seasons = new Set(SEASONS); state.teams = new Set(GROUPS); state.measure = "finish"; syncControls(); render();
   });
+  var copyBtn = el("button", { "class": "btn", type: "button", text: "Copy link to this view" });
+  copyBtn.addEventListener("click", function () {
+    function done(ok) { copyBtn.textContent = ok ? "Link copied" : "Copy the address bar"; setTimeout(function () { copyBtn.textContent = "Copy link to this view"; }, 2000); }
+    try { navigator.clipboard.writeText(location.href).then(function () { done(true); }, function () { done(false); }); } catch (e) { done(false); }
+  });
 
   controls.appendChild(el("div", { "class": "control-row" }, [
     el("div", { "class": "control-group" }, [el("span", { "class": "glabel", text: "Seasons" }), seasonChips]),
     el("div", { "class": "control-group" }, [el("span", { "class": "glabel", text: "Quick periods" }), quick]),
     el("div", { "class": "control-group" }, [el("span", { "class": "glabel", text: "Measure in the charts" }), seg]),
-    el("div", { "class": "control-group" }, [el("span", { "class": "glabel", text: " " }), resetBtn])
+    el("div", { "class": "control-group" }, [el("span", { "class": "glabel", text: " " }), el("div", { "class": "chips" }, [resetBtn, copyBtn])])
   ]));
+
+  /* The current view lives in the address bar: #s=2019,2021&t=Team A|Team B&m=top10 (only what differs from the defaults). */
+  function readState() {
+    var p = new URLSearchParams(location.hash.slice(1));
+    if (p.has("s")) {
+      var ys = p.get("s").split(",").map(Number).filter(function (y) { return SEASONS.indexOf(y) >= 0; });
+      state.seasons = new Set(ys);
+    }
+    if (p.has("t")) {
+      state.teams = new Set(p.get("t").split("|").filter(function (g) { return GROUPS.indexOf(g) >= 0; }));
+    }
+    if (p.has("m") && M[p.get("m")]) state.measure = p.get("m");
+  }
+  function writeState() {
+    var p = new URLSearchParams();
+    if (state.seasons.size !== SEASONS.length) p.set("s", SEASONS.filter(function (y) { return state.seasons.has(y); }).join(","));
+    if (state.teams.size !== GROUPS.length) p.set("t", GROUPS.filter(function (g) { return state.teams.has(g); }).join("|"));
+    if (state.measure !== "finish") p.set("m", state.measure);
+    var h = p.toString();
+    try { history.replaceState(null, "", location.pathname + location.search + (h ? "#" + h : "")); } catch (e) { /* ignore */ }
+  }
 
   var teamGrid = el("div", { "class": "team-grid" });
   GROUPS.forEach(function (g) {
@@ -94,6 +120,7 @@ function init(rows) {
 
   function render() {
     var m = M[state.measure];
+    writeState();
     var sel = rows.filter(function (r) { return state.seasons.has(r.season) && state.teams.has(r.group); });
     var seasonsOnly = rows.filter(function (r) { return state.seasons.has(r.season); });
     var s = summarize(sel);
@@ -186,5 +213,7 @@ function init(rows) {
       "", "", ""] }));
   }
 
+  readState();
+  syncControls();
   render();
 }

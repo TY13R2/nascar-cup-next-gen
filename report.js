@@ -47,15 +47,18 @@ function build(rows) {
   /* ----- four summary numbers ----- */
   var tiles = document.getElementById("tiles");
   [
-    ["Driver-race results", int(all.n), "One row per driver per race, " + nRaces + " races"],
-    ["Average finish", f2(all.finish), "Mean finishing position; lower is better"],
-    ["Top-10 rate", pct1(all.top10), "Share of results finishing 1st–10th"],
-    ["Did-not-finish rate", pct1(all.dnf), "Share of results with a Status other than “running”"]
+    ["Driver-race results", int(all.n), "One row per driver per race, " + nRaces + " races", all.n, function (v) { return int(Math.round(v)); }],
+    ["Average finish", f2(all.finish), "Mean finishing position; lower is better", all.finish, f2],
+    ["Top-10 rate", pct1(all.top10), "Share of results finishing 1st–10th", all.top10, pct1],
+    ["Did-not-finish rate", pct1(all.dnf), "Share of results with a Status other than “running”", all.dnf, pct1]
   ].forEach(function (c) {
-    tiles.appendChild(el("li", { "class": "tile" }, [
-      el("p", { "class": "label", text: c[0] }), el("p", { "class": "value", text: c[1] }), el("p", { "class": "sub", text: c[2] })
-    ]));
+    var value = el("p", { "class": "value" });
+    tiles.appendChild(el("li", { "class": "tile" }, [el("p", { "class": "label", text: c[0] }), value, el("p", { "class": "sub", text: c[2] })]));
+    countUp(value, c[1], c[3], c[4]);          // counts up when scrolled into view, always ends on the exact value
   });
+
+  /* ----- racetrack hero: cars ordered by average finish for the chosen season or period ----- */
+  Race.init(rows, T, document.getElementById("race"));
 
   var host = document.getElementById("findings");
   function finding(n, heading, paras, fig) {
@@ -258,6 +261,8 @@ function build(rows) {
         { head: "Rate", get: function (x) { return pct1(x.r.dnf); } }
       ], SEASONS.map(function (s, i) { return { s: s, r: dnfSeason[i] }; }), { caption: "By season." })
     });
+
+  setupReveal(Array.prototype.slice.call(host.querySelectorAll(".finding")));
 
   /* ----- closing section ----- */
   var about = document.getElementById("about");

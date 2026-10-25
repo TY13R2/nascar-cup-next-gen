@@ -15,12 +15,25 @@ A two-page website for FINN 43303 Project B. It asks: **Among the 12 team groups
 | `styles.css` | One shared look for both pages, with light and dark themes. |
 | `data.js` | Loads the CSV and holds every definition (the four summary numbers, positions gained, the flags). Both pages use it, so the numbers agree. |
 | `charts.js` | A small dependency-free SVG chart library (line, column, diverging bars, grouped bars) with hover and keyboard tooltips. |
+| `race.js` | The racetrack on the report page: one car per team group, a leaderboard, team search with a spotlight card, and the season controls. |
 | `report.js` | Builds the report page text, charts and tables from the data. |
 | `dashboard.js` | Builds the filters and the filtered view. |
 | `cup_next_gen.csv` | The data file (6,321 rows). |
 | `README.md` | This file. |
 
 No libraries or build step are used. All calculations run in the browser from `cup_next_gen.csv`.
+
+## Engaging features (none of them changes a number)
+
+- **Racetrack.** Twelve cars circle an oval. Their *order* is the rank by average finish for the season or period you pick (2019 to 2024, Gen 6, or Next Gen), best out front. Ties share a place (shown as `9=`). Spacing between cars is the same for everyone and is not to scale; the leaderboard beside the track has the real averages.
+- **Team search and spotlight card.** Type a team (or its three-letter code), pick it, and a card shows that team's own history against the other 11. Clicking a car or a leaderboard row does the same.
+- **Count-up numbers and scroll reveal.** The four summary numbers count up when they scroll into view and always end on the exact value. Findings fade in as you scroll. Both are off for visitors who ask their device to reduce motion, and a **Pause motion** button stops the cars.
+- **Shareable views.** The address bar carries the view. On the report: `#season=2022&team=Spire+Motorsports`. On the dashboard: `#s=2019,2021&t=Team+Penske|Spire+Motorsports&m=top10`, plus a **Copy link to this view** button.
+- **Light and dark theme**, remembered between visits.
+
+### Team badges and logos
+
+The cars and leaderboard use **original drawn badges** (a three-letter code on a color), not official team logos, which are trademarked. To show a real logo, add an image file you have the right to use (for example `assets/logos/jgr.png`) and set its path in the `logo` field for that team in `TEAM_STYLE` at the top of `data.js`. Nothing else needs to change.
 
 ## Where the data came from
 
