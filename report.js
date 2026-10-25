@@ -25,22 +25,22 @@ function build(rows) {
     "Which of 12 established NASCAR Cup teams gained or lost the most average finishing position after the Next Gen car? " +
     int(all.n) + " driver-race results, 2019–2024";
   document.getElementById("byline").textContent = "By " + AUTHOR;
+  document.getElementById("reader").textContent = "Written for a competition director at an established Cup team who wants to benchmark against the 11 other teams that raced every season.";
 
   /* ----- opening: answer first, then a recommendation ----- */
   var steady = sorted.filter(function (t) { return !t.rotating && !t.thin; });
   var steadyUp = steady.slice(0, 2), steadyDown = steady.slice().reverse().slice(0, 3);
   var pts = (share6.share - shareNG.share) * 100;
   var opening = document.getElementById("opening");
-  [
+  // One paragraph: the answer is its first two sentences, and it ends with the recommendation.
+  opening.appendChild(el("p", { "class": "lede", text:
     sorted[0].group + " (" + signed1(sorted[0].gained) + " positions) and " + sorted[1].group + " (" + signed1(sorted[1].gained) +
       ") improved their average finish the most after the Next Gen car arrived in 2022, while " + worst.group + " lost the most (" +
       signed1(worst.gained) + "), but the two biggest gains came from teams that used many different drivers. " +
       "Among teams with steadier lineups, " + steadyUp.map(function (t) { return t.group + " (" + signed1(t.gained) + ")"; }).join(" and ") +
-      " improved most, and " + names(steadyDown.map(function (t) { return t.group + " (" + signed1(t.gained) + ")"; })) + " lost the most.",
-    "Recommendation: judge your own team against these peers by rank, not by raw finish, because teams outside this file took " + f1(pts) +
-      " points of the top-10 finishing positions from them, and study " + steadyUp[0].group + " and " + steadyUp[1].group +
-      " first, since their gains came with steady lineups."
-  ].forEach(function (t, i) { opening.appendChild(el("p", { "class": i === 0 ? "lede" : "", text: t })); });
+      " improved most, and " + names(steadyDown.map(function (t) { return t.group + " (" + signed1(t.gained) + ")"; })) + " lost the most. " +
+    "Recommendation: judge your own team against these peers by rank, not by raw finish, because these 12 groups’ share of the top-10 finishing positions fell by " + f1(pts) +
+      " points, and study " + steadyUp[0].group + " and " + steadyUp[1].group + " first, since their gains came with steady lineups." }));
   var cta = el("p", {}, [el("a", { "class": "btn primary", href: "dashboard.html", style: "text-decoration:none;display:inline-block", text: "Open the dashboard →" })]);
   opening.appendChild(cta);
 
@@ -73,6 +73,7 @@ function build(rows) {
     figure.appendChild(el("p", { "class": "subtitle", text: fig.subtitle }));
     var chart = el("div", { "class": "chart" });
     figure.appendChild(chart);
+    figure.appendChild(el("p", { "class": "note rows", text: "Rows counted: " + int(all.n) + " driver-race results from " + nRaces + " races, 12 team groups, 2019–2024." }));
     var det = el("details", { "class": "numbers" }, [el("summary", { text: "View the numbers" }), fig.table]);
     figure.appendChild(det);
     sec.appendChild(figure);
@@ -296,6 +297,6 @@ function build(rows) {
     ["Top-10 share", "Top-10 results in the file divided by ten positions per race, for the seasons shown."]
   ]));
   about.appendChild(el("h3", { text: "Limits" }));
-  about.appendChild(el("p", { text: "The data show what changed, not why. Driver changes, cars fielded and ownership moves all happen in the same years as the new car, and the file cannot separate them. The file ends with the 2024 season. The Status column was not independently verified; a spot check of six races, one per season, against published race results found no differences in finish, start, car or driver for these groups." }));
+  about.appendChild(el("p", { text: "The data show what changed, not why. Driver changes, cars fielded and ownership moves all happen in the same years as the new car, and the file cannot separate them. The file ends with the 2024 season. The two periods being compared are equal: three full 36-race seasons each (108 races), so no partial season is compared with a full one. The Status column was not independently verified. A spot check of the top finishers in six races, one per season, against published race results found no differences in finish, start, car or driver." }));
   about.appendChild(el("p", { "class": "note", text: "Use the Dashboard to filter by season and team group; its four summary numbers use the same definitions as above." }));
 }

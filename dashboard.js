@@ -125,6 +125,8 @@ function init(rows) {
     var seasonsOnly = rows.filter(function (r) { return state.seasons.has(r.season); });
     var s = summarize(sel);
     teamCount.textContent = "Team groups (" + state.teams.size + " of " + GROUPS.length + " selected)";
+    // Every chart states the rows it counts; it follows the filters, and equals 6,321 driver-race results, 2019–2024 at the defaults.
+    var rowsNote = " Rows counted: " + int(s.n) + " driver-race results, seasons " + seasonLabel(Array.from(state.seasons)) + ".";
 
     text("scope", sel.length
       ? "Showing " + int(s.n) + " of " + int(rows.length) + " driver-race results: " + state.teams.size + " team group" + (state.teams.size === 1 ? "" : "s") + ", seasons " + seasonLabel(Array.from(state.seasons)) + "."
@@ -146,7 +148,7 @@ function init(rows) {
 
     /* chart A: measure by season */
     text("a-title", m.label + " by season");
-    text("a-sub", m.hint + " Shows the selected team groups" + (state.teams.size < GROUPS.length ? " and, for context, all 12 groups." : "."));
+    text("a-sub", m.hint + " Shows the selected team groups" + (state.teams.size < GROUPS.length ? " and, for context, all 12 groups." : ".") + rowsNote);
     var series = [];
     if (state.teams.size < GROUPS.length) {
       series.push({ name: "All 12 groups", color: "var(--context)", values: SEASONS.map(function (y) {
@@ -167,7 +169,7 @@ function init(rows) {
 
     /* chart B: both periods, per team */
     text("b-title", m.label + " by team group, 2019–2021 and 2022–2024");
-    text("b-sub", m.hint + " Best team first; a period with no selected seasons has no bar.");
+    text("b-sub", m.hint + " Best team first; a period with no selected seasons has no bar." + rowsNote);
     var maxV = 0;
     T.forEach(function (t) { [t.sa, t.sb].forEach(function (x) { var v = m.val(x); if (isNum(v) && v > maxV) maxV = v; }); });
     Charts.groupedBars(document.getElementById("chart-b"), {
@@ -182,7 +184,7 @@ function init(rows) {
 
     /* chart C: change between periods */
     text("c-title", m.changeTitle + ", 2019–2021 to 2022–2024");
-    text("c-sub", "Needs selected seasons from both periods. Positive means better.");
+    text("c-sub", "Needs selected seasons from both periods. Positive means better." + rowsNote);
     var both = T.filter(function (t) { return t.sa.n > 0 && t.sb.n > 0; }).sort(function (a, b) { return m.change(b) - m.change(a); });
     Charts.divergingBars(document.getElementById("chart-c"), {
       items: both.map(function (t) {
@@ -196,7 +198,7 @@ function init(rows) {
     });
 
     /* table */
-    text("t-sub", "One row per selected team group, best first by " + m.label.toLowerCase() + ". The last row is the whole current view.");
+    text("t-sub", "One row per selected team group, best first by " + m.label.toLowerCase() + ". The last row is the whole current view." + rowsNote);
     var tbl = document.getElementById("table");
     tbl.textContent = "";
     if (!T.length) { tbl.appendChild(el("p", { "class": "note", text: "No results match the current filters." })); return; }

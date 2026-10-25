@@ -58,7 +58,7 @@ var Race = (function () {
     host.setAttribute("aria-labelledby", "race-h");
     host.textContent = "";
     host.appendChild(el("h2", { id: "race-h", text: "The 12 teams, season by season" }));
-    host.appendChild(el("p", { "class": "note", text: "Cars are ordered by average finish in the season or period you pick, best out front. The gaps between cars are the same for everyone; the leaderboard has the real numbers." }));
+    host.appendChild(el("p", { "class": "note", text: "Cars are ordered by average finish in the season or period you pick, best out front. The gaps between cars are the same for everyone; the leaderboard has the real numbers. Rows counted: " + int(rows.length) + " driver-race results, 2019–2024; each view uses the results from its own seasons." }));
 
     var seg = el("div", { "class": "seg", role: "radiogroup", "aria-label": "Season or period" });
     var segInputs = {};

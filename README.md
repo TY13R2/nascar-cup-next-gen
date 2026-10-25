@@ -19,6 +19,7 @@ A two-page website for FINN 43303 Project B. It asks: **Among the 12 team groups
 | `report.js` | Builds the report page text, charts and tables from the data. |
 | `dashboard.js` | Builds the filters and the filtered view. |
 | `cup_next_gen.csv` | The data file (6,321 rows). |
+| `.gitattributes` | Tells Git to leave the CSV's line endings alone, so the published file is byte-identical to the original. |
 | `README.md` | This file. |
 
 No libraries or build step are used. All calculations run in the browser from `cup_next_gen.csv`.
@@ -39,7 +40,7 @@ The cars and leaderboard use **original drawn badges** (a three-letter code on a
 
 `cup_next_gen.csv` holds the 2019-2024 results of 12 team groups. The results come from the Cup Series data of the [nascaR.data](https://cran.r-project.org/package=nascaR.data) R package (`cup_series.csv`); that package says its data was sourced with permission from DriverAverages.com. `cup_next_gen.csv` adds two labels: `TeamGroup` (a team name that follows renames) and `Period` (2019-2021 or 2022-2024).
 
-Tyler Eldringhoff found the package with help from Claude's web-based AI. The pages were built with Claude Code; the question, definitions and every number are the author's responsibility.
+The nascaR.data package is licensed GPL (>= 3) on CRAN; see the package page for its terms and citation. Tyler Eldringhoff found the package with help from Claude's web-based AI. The pages were built with Claude Code; the question, definitions and every number are the author's responsibility.
 
 The 12 groups are the teams that raced in all six seasons, with renames joined (Roush Fenway Racing = RFK Racing; Richard Petty Motorsports and Petty GMS Motorsports = Legacy Motor Club). Results from other teams (for example 23XI Racing, Trackhouse Racing, Chip Ganassi Racing, Kaulig Racing) are not in the file: 1,854 results, 22.7% of the 8,175 results for 2019-2024 in the full file. Because of that, 22 races have no winning row, so the project does not count wins.
 
