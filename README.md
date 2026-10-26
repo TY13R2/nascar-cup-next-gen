@@ -73,8 +73,10 @@ python -m http.server 8765
 
 Then open <http://localhost:8765/index.html>.
 
-## Still to do before submitting
+## Where everything lives
 
-1. Create the public GitHub repository, push these files, and turn on GitHub Pages.
-2. Build the Tableau Public dashboard with the same four summary numbers and labels.
-3. Add the agreement table (website vs Tableau) and the Tableau link to the closing section of the report page.
+- Live site: <https://ty13r2.github.io/nascar-cup-next-gen/>
+- Repository: <https://github.com/TY13R2/nascar-cup-next-gen>
+- Tableau Public dashboard: <https://public.tableau.com/app/profile/tyler.eldringhoff/viz/NascarCupTeamDashboard/NASCARDashboard>
+
+The closing section of the report page ("About the data") has a table comparing the website's four summary numbers with the Tableau dashboard's, at the default filters, with the Tableau link under it.

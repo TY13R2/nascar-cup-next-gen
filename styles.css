@@ -188,6 +188,7 @@ tr.total td { font-weight: 700; border-top: 1px solid var(--axis); }
 .about dl { margin: 0; }
 .about dt { font-weight: 600; margin-top: 0.8rem; }
 .about dd { margin: 0.1rem 0 0; color: var(--ink2); }
+.about a { overflow-wrap: anywhere; }
 .about code { font-size: 0.9em; background: var(--surface); border: 1px solid var(--border); border-radius: 4px; padding: 0 4px; }
 
 /* ---------- dashboard controls ---------- */

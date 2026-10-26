@@ -298,5 +298,25 @@ function build(rows) {
   ]));
   about.appendChild(el("h3", { text: "Limits" }));
   about.appendChild(el("p", { text: "The data show what changed, not why. Driver changes, cars fielded and ownership moves all happen in the same years as the new car, and the file cannot separate them. The file ends with the 2024 season. The two periods being compared are equal: three full 36-race seasons each (108 races), so no partial season is compared with a full one. The Status column was not independently verified. A spot check of the top finishers in six races, one per season, against published race results found no differences in finish, start, car or driver." }));
+  /* ----- agreement between the website and the Tableau dashboard ----- */
+  var TABLEAU_URL = "https://public.tableau.com/app/profile/tyler.eldringhoff/viz/NascarCupTeamDashboard/NASCARDashboard";
+  // The four numbers read from the published Tableau dashboard with Season and Team Group both on (All).
+  var TABLEAU_NUMBERS = ["6,321", "18.45", "29.0%", "12.9%"];
+  var siteNumbers = [int(all.n), f2(all.finish), pct1(all.top10), pct1(all.dnf)];
+  var agree = ["Driver-race results", "Average finish", "Top-10 rate", "Did-not-finish rate"].map(function (name, i) {
+    return { name: name, site: siteNumbers[i], tableau: TABLEAU_NUMBERS[i], ok: siteNumbers[i] === TABLEAU_NUMBERS[i] };
+  });
+  var allAgree = agree.every(function (r) { return r.ok; });
+  about.appendChild(el("h3", { text: "Do the website and Tableau agree?" }));
+  about.appendChild(el("p", { text: "Both builds were set to the same filters (all seasons and all 12 team groups), so both count the same " + int(all.n) +
+    " driver-race results. " + (allAgree ? "All four summary numbers match, so the two builds agree." : "At least one number differs; see the table.") }));
+  about.appendChild(buildTable([
+    { head: "Summary number", get: function (r) { return r.name; } },
+    { head: "Website", get: function (r) { return r.site; } },
+    { head: "Tableau", get: function (r) { return r.tableau; } },
+    { head: "Match", get: function (r) { return r.ok ? "Yes" : "No"; } }
+  ], agree, { caption: "The four summary numbers at the default filters." }));
+  about.appendChild(el("p", {}, ["Tableau Public dashboard: ",
+    el("a", { href: TABLEAU_URL, target: "_blank", rel: "noopener", text: TABLEAU_URL })]));
   about.appendChild(el("p", { "class": "note", text: "Use the Dashboard to filter by season and team group; its four summary numbers use the same definitions as above." }));
 }
